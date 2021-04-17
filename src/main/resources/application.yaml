@@ -6,3 +6,5 @@ spring:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/gforms
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
+jwt:
+  secret: some-big-secret

@@ -3,7 +3,6 @@ package org.elsys.ip.forms.questions
 import org.elsys.ip.forms.EntityId
 import org.springframework.data.repository.CrudRepository
 import javax.persistence.*
-import javax.transaction.Transactional
 
 @Entity
 data class Question(
@@ -19,5 +18,4 @@ data class Question(
         val id: EntityId = 0
 )
 
-@Transactional(Transactional.TxType.MANDATORY)
 interface QuestionsRepo : CrudRepository<Question, EntityId>
