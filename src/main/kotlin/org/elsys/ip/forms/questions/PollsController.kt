@@ -3,9 +3,11 @@ package org.elsys.ip.forms.questions
 import org.elsys.ip.forms.*
 import org.elsys.ip.forms.auth.UsersService
 import org.elsys.ip.forms.questions.dto.*
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @Controller
 @RequestMapping("/polls")
@@ -23,14 +25,7 @@ class PollsController(
         if (!poll.open) throw UnauthorizedAccess()
 
         model.addAttribute("poll", PollDTO(poll))
-        model.addAttribute("response",
-                ResponseDTO(
-                        poll.id,
-                        MutableList(poll.questions.size) {
-                            MutableList(poll.questions[it].answers.size) { -1 }
-                        }
-                )
-        )
+        model.addAttribute("response", ResponseDTO(poll))
         return "polls/respond"
     }
 
@@ -42,7 +37,11 @@ class PollsController(
         val poll = pollsService.getPoll(pollId) ?: throw EntityNotFound(pollId, "Poll")
         if (!poll.open) throw UnauthorizedAccess()
 
-        pollsService.respond(responseDTO.responses.flatten())
+        if (responseDTO.responses.any { it.required && it.responses.size == 0 }) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Required fields not given")
+        }
+
+        pollsService.respond(responseDTO.responses.flatMap { it.responses })
 
         return "redirect:/"
     }
@@ -111,11 +110,12 @@ class PollsController(
                 id,
                 editQuestionDTO.question,
                 editQuestionDTO.answers,
-                editQuestionDTO.multipleChoice
+                editQuestionDTO.multipleChoice,
+                editQuestionDTO.required
         )
 
         @Suppress("SpringMVCViewInspection")
-        return "redirect:/polls/$id"
+        return "redirect:/polls/$id/edit"
     }
 
     @GetMapping("create")

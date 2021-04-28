@@ -17,11 +17,13 @@ data class EditPollDTO(
 data class EditQuestionDTO(
         val question: String = "",
         val answers: MutableList<String> = mutableListOf(),
-        val multipleChoice: Boolean = false
+        val multipleChoice: Boolean = false,
+        val required: Boolean = false
 ) {
     constructor(question: Question): this(
             question.question,
             question.answers.map { it.answer } .toMutableList(),
-            question.multipleChoice
+            question.multipleChoice,
+            question.required
     )
 }

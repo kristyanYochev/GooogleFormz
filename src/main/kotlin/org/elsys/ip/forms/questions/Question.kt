@@ -14,7 +14,7 @@ data class Question(
         @JoinColumn(name = "questionId", referencedColumnName = "id")
         val answers: List<Answer>,
         val multipleChoice: Boolean = false,
-
+        val required: Boolean = false,
         @Id
         @GeneratedValue
         val id: EntityId = 0

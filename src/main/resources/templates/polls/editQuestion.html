@@ -23,6 +23,11 @@
             <input type="checkbox" th:field="*{multipleChoice}">
         </label>
         <br>
+        <label>
+            Required:
+            <input type="checkbox" th:field="*{required}">
+        </label>
+        <br>
         <th:block th:each="answer, stat: *{answers}">
             <label>
                 Answer:

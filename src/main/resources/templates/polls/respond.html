@@ -11,14 +11,16 @@
 
         <div th:each="question, qStat: ${poll.questions}">
             <h2 th:text="${question.question}"></h2>
+            <input type="hidden" th:field="*{responses[__${qStat.index}__].required}">
             <th:block th:if="${question.multipleChoice}">
                 <th:block th:each="answer: ${question.answers}">
                     <label>
                         <input
                                 type="checkbox"
-                                th:field="*{responses[__${qStat.index}__]}"
+                                th:field="*{responses[__${qStat.index}__].responses}"
                                 th:value="${answer.id}"
-                                th:text="${answer.answer}">
+                                th:text="${answer.answer}"
+                        >
                     </label>
                     <br>
                 </th:block>
@@ -26,7 +28,12 @@
             <th:block th:unless="${question.multipleChoice}">
                 <th:block th:each="answer: ${question.answers}">
                     <label>
-                        <input type="radio" th:field="*{responses[__${qStat.index}__][__0__]}" th:value="${answer.id}">
+                        <input
+                                type="radio"
+                                th:field="*{responses[__${qStat.index}__].responses[__0__]}"
+                                th:value="${answer.id}"
+                                th:required="${question.required}"
+                        >
                         <span th:text="${answer.answer}"></span>
                     </label>
                     <br>
