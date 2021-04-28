@@ -6,5 +6,15 @@
 </head>
 <body>
     <h1 th:text="${poll.title}"></h1>
+    <ul>
+        <li th:each="question: ${poll.questions}">
+            <span th:text="${question.question}"></span>
+            <ul>
+                <li th:each="answer: ${question.answers}" th:text="${answer}"></li>
+            </ul>
+        </li>
+    </ul>
+    <a th:if="${!poll.open}" th:href="@{/polls/{pollId}/add-question(pollId=${pollId})}">+ Add Question</a>
+    <a th:if="${!poll.open}" th:href="@{/polls/{pollId}/start(pollId=${pollId})}">Start Poll</a>
 </body>
 </html>

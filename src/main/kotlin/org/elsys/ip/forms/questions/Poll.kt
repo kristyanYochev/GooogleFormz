@@ -13,12 +13,12 @@ data class Poll(
                 orphanRemoval = true
         )
         @JoinColumn(name = "pollId", referencedColumnName = "id")
-        val questions: List<Question> = emptyList(),
+        val questions: MutableList<Question> = mutableListOf(),
 
         @ManyToOne
         val author: User,
 
-        var open: Boolean = true,
+        var open: Boolean = false,
 
         @Id
         @GeneratedValue

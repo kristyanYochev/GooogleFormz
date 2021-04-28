@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Question</title>
+</head>
+<body>
+    <form method="get">
+        <label for="answerCount">
+            Number of answers:
+            <input type="number" th:value="${answersCount}" th:name="answersCount" name="answersCount" id="answerCount">
+        </label>
+        <input type="submit" value="Change number of answers">
+    </form>
+    <form action="#" th:action="@{''}" method="post" th:method="post" th:object="${question}">
+        <label>
+            Question:
+            <input th:field="*{question}">
+        </label>
+        <br>
+        <th:block th:each="answer, stat: *{answers}">
+            <label>
+                Answer:
+                <input th:field="*{answers[__${stat.index}__]}">
+            </label>
+            <br>
+        </th:block>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
