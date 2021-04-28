@@ -47,6 +47,18 @@ class AuthController(
         return "redirect:/login"
     }
 
+    @GetMapping("/logout")
+    fun logout(response: HttpServletResponse): String {
+        val cookie = Cookie("auth-token", null)
+        cookie.isHttpOnly = true
+        cookie.secure = true
+        cookie.maxAge = 0
+        response.addCookie(cookie)
+
+        @Suppress("SpringMVCViewInspection")
+        return "redirect:/login"
+    }
+
     fun authenticate(username: String, password: String): String {
         try {
             authManager.authenticate(UsernamePasswordAuthenticationToken(username, password))

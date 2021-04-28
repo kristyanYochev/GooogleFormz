@@ -21,7 +21,7 @@ class AuthConfig(
         private val authRequestFilter: AuthRequestFilter
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder?) {
-        auth?.userDetailsService(usersService)?.passwordEncoder(passwordEncoder())
+        auth!!.userDetailsService(usersService).passwordEncoder(passwordEncoder())
     }
 
     @Bean
@@ -31,13 +31,13 @@ class AuthConfig(
     override fun authenticationManagerBean(): AuthenticationManager = super.authenticationManagerBean()
 
     override fun configure(http: HttpSecurity?) {
-        http
-                ?.authorizeRequests()
-                ?.antMatchers("/login", "/register")?.permitAll()
-                ?.anyRequest()?.authenticated()?.and()
-                ?.exceptionHandling()?.authenticationEntryPoint(authEntryPoint)?.and()
-                ?.sessionManagement()?.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http!!
+                .authorizeRequests()
+                .antMatchers("/login", "/register").permitAll()
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
-        http?.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
     }
 }
