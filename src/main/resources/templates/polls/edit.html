@@ -14,6 +14,7 @@
             </ul>
         </li>
     </ul>
+    <a th:href="@{/polls/{pollId}/stats(pollId=${pollId})}">View stats</a>
     <a th:if="${!poll.open}" th:href="@{/polls/{pollId}/add-question(pollId=${pollId})}">+ Add Question</a>
     <a th:if="${!poll.open}" th:href="@{/polls/{pollId}/start(pollId=${pollId})}">Start Poll</a>
 </body>

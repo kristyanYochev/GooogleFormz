@@ -2,6 +2,7 @@ package org.elsys.ip.forms.questions
 
 import org.elsys.ip.forms.*
 import org.elsys.ip.forms.auth.UsersService
+import org.elsys.ip.forms.questions.dto.*
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -39,9 +40,23 @@ class PollsController(
         return "redirect:/"
     }
 
+    @GetMapping("{id}/stats")
+    fun pollStats(
+            @PathVariable(name = "id") id: EntityId,
+            model: Model
+    ): String {
+        pollsService.checkAuthor(id, usersService.currentUser()!!)
+
+        val poll = pollsService.getPoll(id) ?: throw EntityNotFound(id, "Poll")
+        val pollDto = PollStatsDTO(poll)
+        model.addAttribute("poll", pollDto)
+
+        return "polls/stats"
+    }
+
     @GetMapping("{id}/edit")
     fun editPoll(
-            @PathVariable(name="id") id: EntityId,
+            @PathVariable(name = "id") id: EntityId,
             model: Model
     ): String {
         pollsService.checkAuthor(id, usersService.currentUser()!!)
@@ -103,64 +118,3 @@ class PollsController(
         return "redirect:${poll.id}"
     }
 }
-
-data class EditPollDTO(
-        val title: String = "",
-        val questions: List<EditQuestionDTO> = emptyList(),
-        val open: Boolean = false,
-) {
-    constructor(poll: Poll): this(
-            poll.title,
-            poll.questions.map { EditQuestionDTO(it) },
-            poll.open
-    )
-}
-
-data class EditQuestionDTO(
-        val question: String = "",
-        val answers: MutableList<String> = mutableListOf()
-) {
-    constructor(question: Question): this(
-            question.question,
-            question.answers.map { it.answer } .toMutableList()
-    )
-}
-
-data class PollDTO(
-        val title: String,
-        val questions: List<QuestionDTO>,
-        val id: EntityId
-) {
-    constructor(poll: Poll): this(
-            poll.title,
-            poll.questions.map { QuestionDTO(it) },
-            poll.id
-    )
-}
-
-data class QuestionDTO(
-        val question: String,
-        val answers: List<AnswerDTO>,
-        val id: EntityId
-) {
-    constructor(question: Question): this(
-            question.question,
-            question.answers.map { AnswerDTO(it) },
-            question.id
-    )
-}
-
-data class AnswerDTO(
-        val answer: String,
-        val id: EntityId
-) {
-    constructor(answer: Answer): this(
-            answer.answer,
-            answer.id
-    )
-}
-
-data class ResponseDTO(
-        val pollId: EntityId = -1,
-        val responses: MutableList<EntityId> = mutableListOf()
-)

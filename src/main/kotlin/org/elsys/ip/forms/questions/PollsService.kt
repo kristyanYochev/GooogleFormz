@@ -21,7 +21,7 @@ class PollsService(
 
     fun isAuthor(pollId: EntityId, user: User): Boolean {
         val poll = pollsRepo.findByIdOrNull(pollId) ?: throw EntityNotFound(pollId, "Poll")
-        return poll.author.id != user.id
+        return poll.author.id == user.id
     }
 
     fun addQuestionToPoll(id: EntityId, question: String, answers: List<String>) {

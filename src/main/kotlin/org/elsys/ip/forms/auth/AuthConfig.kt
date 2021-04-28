@@ -1,6 +1,7 @@
 package org.elsys.ip.forms.auth
 
 import org.springframework.context.annotation.*
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
@@ -34,6 +35,8 @@ class AuthConfig(
         http!!
                 .authorizeRequests()
                 .antMatchers("/login", "/register", "/").permitAll()
+                .antMatchers(HttpMethod.GET, "/polls/{id}").permitAll()
+                .antMatchers(HttpMethod.POST, "/polls/{id}").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
