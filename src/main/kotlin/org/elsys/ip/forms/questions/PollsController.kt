@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import javax.servlet.http.*
 
 @Controller
 @RequestMapping("/polls")
@@ -18,11 +19,15 @@ class PollsController(
     @GetMapping("{id}")
     fun poll(
             @PathVariable(name = "id") id: EntityId,
+            @CookieValue(name = "answered-polls", defaultValue = "") answeredPollsString: String,
             model: Model
     ): String {
         val poll = pollsService.getPoll(id) ?: throw EntityNotFound(id, "Poll")
-
         if (!poll.open) throw UnauthorizedAccess()
+
+        val answeredPolls: List<EntityId> = if (answeredPollsString.isNotEmpty())
+            answeredPollsString.split(",").map { it.toLong() } else emptyList()
+        if (answeredPolls.contains(id)) throw UnauthorizedAccess()
 
         model.addAttribute("poll", PollDTO(poll))
         model.addAttribute("response", ResponseDTO(poll))
@@ -32,16 +37,26 @@ class PollsController(
     @PostMapping("{id}")
     fun poll(
             @PathVariable(name = "id") pollId: EntityId,
-            @ModelAttribute(name = "response") responseDTO: ResponseDTO
+            @ModelAttribute(name = "response") responseDTO: ResponseDTO,
+            @CookieValue(name = "answered-polls", defaultValue = "") answeredPollsString: String,
+            response: HttpServletResponse
     ): String {
         val poll = pollsService.getPoll(pollId) ?: throw EntityNotFound(pollId, "Poll")
         if (!poll.open) throw UnauthorizedAccess()
+
+        val answeredPolls: List<EntityId> = if (answeredPollsString.isNotEmpty())
+            answeredPollsString.split(",").map { it.toLong() } else emptyList()
+
+        if (answeredPolls.contains(pollId)) throw UnauthorizedAccess()
 
         if (responseDTO.responses.any { it.required && it.responses.size == 0 }) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Required fields not given")
         }
 
         pollsService.respond(responseDTO.responses.flatMap { it.responses })
+        val cookie = Cookie("answered-polls", (answeredPolls + listOf(pollId)).joinToString(","))
+        cookie.maxAge = 10 * 365 * 24 * 60 * 60 // 10 years is plenty enough
+        response.addCookie(cookie)
 
         return "redirect:/"
     }
@@ -111,7 +126,8 @@ class PollsController(
                 editQuestionDTO.question,
                 editQuestionDTO.answers,
                 editQuestionDTO.multipleChoice,
-                editQuestionDTO.required
+                editQuestionDTO.required,
+                editQuestionDTO.image
         )
 
         @Suppress("SpringMVCViewInspection")

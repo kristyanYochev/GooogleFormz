@@ -20,6 +20,7 @@ data class QuestionDTO(
         val answers: List<AnswerDTO>,
         val multipleChoice: Boolean,
         val required: Boolean,
+        val imageUrl: String,
         val id: EntityId
 ) {
     constructor(question: Question): this(
@@ -27,6 +28,7 @@ data class QuestionDTO(
             question.answers.map { AnswerDTO(it) },
             question.multipleChoice,
             question.required,
+            question.image,
             question.id
     )
 }

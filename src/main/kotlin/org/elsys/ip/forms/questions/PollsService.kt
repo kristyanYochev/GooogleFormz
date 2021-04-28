@@ -29,9 +29,10 @@ class PollsService(
             question: String,
             answers: List<String>,
             multipleChoice: Boolean,
-            required: Boolean
+            required: Boolean,
+            imageUrl: String
     ) {
-        val questionEntity = Question(question, answers.map { Answer(it) }, multipleChoice, required)
+        val questionEntity = Question(question, answers.map { Answer(it) }, multipleChoice, required, imageUrl)
         val poll = pollsRepo.findByIdOrNull(id) ?: throw EntityNotFound(id, "Poll")
         poll.questions.add(questionEntity)
         pollsRepo.save(poll)

@@ -1,6 +1,7 @@
 package org.elsys.ip.forms.questions.dto
 
 import org.elsys.ip.forms.questions.*
+import org.springframework.web.multipart.MultipartFile
 
 data class EditPollDTO(
         val title: String = "",
@@ -18,12 +19,14 @@ data class EditQuestionDTO(
         val question: String = "",
         val answers: MutableList<String> = mutableListOf(),
         val multipleChoice: Boolean = false,
-        val required: Boolean = false
+        val required: Boolean = false,
+        val image: String = ""
 ) {
     constructor(question: Question): this(
             question.question,
             question.answers.map { it.answer } .toMutableList(),
             question.multipleChoice,
-            question.required
+            question.required,
+            question.image
     )
 }

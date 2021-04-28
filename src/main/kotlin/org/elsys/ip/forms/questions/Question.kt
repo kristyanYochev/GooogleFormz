@@ -15,6 +15,7 @@ data class Question(
         val answers: List<Answer>,
         val multipleChoice: Boolean = false,
         val required: Boolean = false,
+        val image: String = "",
         @Id
         @GeneratedValue
         val id: EntityId = 0

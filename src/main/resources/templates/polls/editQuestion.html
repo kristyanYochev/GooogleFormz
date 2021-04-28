@@ -28,6 +28,11 @@
             <input type="checkbox" th:field="*{required}">
         </label>
         <br>
+        <label>
+            Image URL:
+            <input type="url" th:field="*{image}">
+        </label>
+        <br>
         <th:block th:each="answer, stat: *{answers}">
             <label>
                 Answer:

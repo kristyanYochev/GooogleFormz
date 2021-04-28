@@ -12,6 +12,8 @@
         <div th:each="question, qStat: ${poll.questions}">
             <h2 th:text="${question.question}"></h2>
             <input type="hidden" th:field="*{responses[__${qStat.index}__].required}">
+            <img th:if="${question.imageUrl.length() > 0}" th:src="${question.imageUrl}" th:alt="${question.question}" width="100%">
+            <br>
             <th:block th:if="${question.multipleChoice}">
                 <th:block th:each="answer: ${question.answers}">
                     <label>
