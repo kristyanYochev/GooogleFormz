@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Respond to Poll</title>
+</head>
+<body>
+    <h1 th:text="${poll.title}"></h1>
+    <form th:method="post" th:action="@{''}" th:object="${response}" action="#" method="post">
+        <input type="hidden" th:field="*{pollId}">
+
+        <div th:each="question, qStat: ${poll.questions}">
+            <h2 th:text="${question.question}"></h2>
+            <th:block th:each="answer: ${question.answers}">
+                <label>
+                    <input type="radio" th:field="*{responses[__${qStat.index}__]}" th:value="${answer.id}">
+                    <span th:text="${answer.answer}"></span>
+                </label>
+                <br>
+            </th:block>
+        </div>
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
