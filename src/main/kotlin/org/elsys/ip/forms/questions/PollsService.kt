@@ -11,9 +11,13 @@ class PollsService(
         private val answersRepo: AnswersRepo,
         private val pollsRepo: PollsRepo
 ) {
-    fun createEmptyPoll(title: String, author: User) = pollsRepo.save(Poll(title, author = author))
+    fun createEmptyPoll(title: String, author: User, public: Boolean) = pollsRepo.save(
+            Poll(title, author = author, public = public)
+    )
 
     fun getPoll(id: EntityId) = pollsRepo.findByIdOrNull(id)
+
+    fun publicPolls() = pollsRepo.findAllPublicAndOpenPolls()
 
     fun checkAuthor(pollId: EntityId, user: User) {
         if (!isAuthor(pollId, user)) throw UnauthorizedAccess()

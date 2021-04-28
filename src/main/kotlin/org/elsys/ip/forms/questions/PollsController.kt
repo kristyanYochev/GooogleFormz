@@ -16,6 +16,12 @@ class PollsController(
         val usersService: UsersService,
         val pollsService: PollsService
 ) {
+    @GetMapping
+    fun publicPolls(model: Model): String {
+        model.addAttribute("polls", pollsService.publicPolls().map { PublicPollDTO(it) })
+        return "polls/publicPolls"
+    }
+
     @GetMapping("{id}")
     fun poll(
             @PathVariable(name = "id") id: EntityId,
@@ -26,7 +32,7 @@ class PollsController(
         if (!poll.open) throw UnauthorizedAccess()
 
         val answeredPolls: List<EntityId> = if (answeredPollsString.isNotEmpty())
-            answeredPollsString.split(",").map { it.toLong() } else emptyList()
+            answeredPollsString.split("!").map { it.toLong() } else emptyList()
         if (answeredPolls.contains(id)) throw UnauthorizedAccess()
 
         model.addAttribute("poll", PollDTO(poll))
@@ -45,7 +51,7 @@ class PollsController(
         if (!poll.open) throw UnauthorizedAccess()
 
         val answeredPolls: List<EntityId> = if (answeredPollsString.isNotEmpty())
-            answeredPollsString.split(",").map { it.toLong() } else emptyList()
+            answeredPollsString.split("!").map { it.toLong() } else emptyList()
 
         if (answeredPolls.contains(pollId)) throw UnauthorizedAccess()
 
@@ -54,7 +60,7 @@ class PollsController(
         }
 
         pollsService.respond(responseDTO.responses.flatMap { it.responses })
-        val cookie = Cookie("answered-polls", (answeredPolls + listOf(pollId)).joinToString(","))
+        val cookie = Cookie("answered-polls", (answeredPolls + listOf(pollId)).joinToString("!"))
         cookie.maxAge = 10 * 365 * 24 * 60 * 60 // 10 years is plenty enough
         response.addCookie(cookie)
 
@@ -142,7 +148,7 @@ class PollsController(
 
     @PostMapping("create")
     fun createPoll(@ModelAttribute("poll") editPollDto: EditPollDTO): String {
-        val poll = pollsService.createEmptyPoll(editPollDto.title, usersService.currentUser()!!)
+        val poll = pollsService.createEmptyPoll(editPollDto.title, usersService.currentUser()!!, editPollDto.public)
         return "redirect:${poll.id}"
     }
 }

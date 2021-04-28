@@ -11,6 +11,12 @@
             Title
             <input id="title" type="text" th:field="*{title}">
         </label>
+        <br>
+        <label>
+            <input type="checkbox" th:field="*{public}">
+            Public
+        </label>
+        <br>
         <input type="submit" value="Create">
     </form>
 </body>

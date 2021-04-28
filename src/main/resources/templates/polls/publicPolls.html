@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Public Polls</title>
+</head>
+<body>
+    <h1>Public polls</h1>
+    <div th:each="poll: ${polls}">
+        <h2 th:text="${poll.title}"></h2>
+        <p th:text="'Created by ' + ${poll.authorName}"></p>
+        <a th:href="@{/polls/{pollId}(pollId=${poll.id})}">Answer poll</a>
+    </div>
+</body>
+</html>

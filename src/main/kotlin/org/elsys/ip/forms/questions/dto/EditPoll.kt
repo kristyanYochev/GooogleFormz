@@ -7,11 +7,13 @@ data class EditPollDTO(
         val title: String = "",
         val questions: List<EditQuestionDTO> = emptyList(),
         val open: Boolean = false,
+        val public: Boolean = false
 ) {
     constructor(poll: Poll): this(
             poll.title,
             poll.questions.map { EditQuestionDTO(it) },
-            poll.open
+            poll.open,
+            poll.public
     )
 }
 

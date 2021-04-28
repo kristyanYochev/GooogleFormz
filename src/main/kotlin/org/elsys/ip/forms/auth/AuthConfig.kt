@@ -34,7 +34,7 @@ class AuthConfig(
     override fun configure(http: HttpSecurity?) {
         http!!
                 .authorizeRequests()
-                .antMatchers("/login", "/register", "/").permitAll()
+                .antMatchers("/login", "/register", "/", "/polls").permitAll()
                 .antMatchers(HttpMethod.GET, "/polls/{id}").permitAll()
                 .antMatchers(HttpMethod.POST, "/polls/{id}").permitAll()
                 .anyRequest().authenticated().and()
