@@ -24,8 +24,8 @@ class PollsService(
         return poll.author.id == user.id
     }
 
-    fun addQuestionToPoll(id: EntityId, question: String, answers: List<String>) {
-        val questionEntity = Question(question, answers.map { Answer(it) })
+    fun addQuestionToPoll(id: EntityId, question: String, answers: List<String>, multipleChoice: Boolean) {
+        val questionEntity = Question(question, answers.map { Answer(it) }, multipleChoice)
         val poll = pollsRepo.findByIdOrNull(id) ?: throw EntityNotFound(id, "Poll")
         poll.questions.add(questionEntity)
         pollsRepo.save(poll)

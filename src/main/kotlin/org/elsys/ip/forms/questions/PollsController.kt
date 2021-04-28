@@ -23,7 +23,14 @@ class PollsController(
         if (!poll.open) throw UnauthorizedAccess()
 
         model.addAttribute("poll", PollDTO(poll))
-        model.addAttribute("response", ResponseDTO(poll.id, MutableList(poll.questions.size) { -1 }))
+        model.addAttribute("response",
+                ResponseDTO(
+                        poll.id,
+                        MutableList(poll.questions.size) {
+                            MutableList(poll.questions[it].answers.size) { -1 }
+                        }
+                )
+        )
         return "polls/respond"
     }
 
@@ -35,7 +42,7 @@ class PollsController(
         val poll = pollsService.getPoll(pollId) ?: throw EntityNotFound(pollId, "Poll")
         if (!poll.open) throw UnauthorizedAccess()
 
-        pollsService.respond(responseDTO.responses)
+        pollsService.respond(responseDTO.responses.flatten())
 
         return "redirect:/"
     }
@@ -100,7 +107,12 @@ class PollsController(
     ): String {
         pollsService.checkAuthor(id, usersService.currentUser()!!)
 
-        pollsService.addQuestionToPoll(id, editQuestionDTO.question, editQuestionDTO.answers)
+        pollsService.addQuestionToPoll(
+                id,
+                editQuestionDTO.question,
+                editQuestionDTO.answers,
+                editQuestionDTO.multipleChoice
+        )
 
         @Suppress("SpringMVCViewInspection")
         return "redirect:/polls/$id"

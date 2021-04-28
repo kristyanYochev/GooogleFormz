@@ -18,11 +18,13 @@ data class PollDTO(
 data class QuestionDTO(
         val question: String,
         val answers: List<AnswerDTO>,
+        val multipleChoice: Boolean,
         val id: EntityId
 ) {
     constructor(question: Question): this(
             question.question,
             question.answers.map { AnswerDTO(it) },
+            question.multipleChoice,
             question.id
     )
 }
@@ -39,5 +41,6 @@ data class AnswerDTO(
 
 data class ResponseDTO(
         val pollId: EntityId = -1,
-        val responses: MutableList<EntityId> = mutableListOf()
+        // BEHOLD: THE MOTHER OF ALL HACKS
+        val responses: MutableList<MutableList<EntityId>> = mutableListOf()
 )
