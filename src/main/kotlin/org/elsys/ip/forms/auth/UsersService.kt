@@ -1,5 +1,6 @@
 package org.elsys.ip.forms.auth
 
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.*
 import org.springframework.stereotype.Service
 
@@ -20,5 +21,10 @@ class UsersService(
 
     fun registerUser(username: String, encodedPassword: String) {
         usersRepo.save(User(username, encodedPassword))
+    }
+
+    fun currentUser(): User? {
+        val username = SecurityContextHolder.getContext().authentication.name
+        return usersRepo.findByUsername(username)
     }
 }

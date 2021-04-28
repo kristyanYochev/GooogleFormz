@@ -7,6 +7,9 @@ import javax.persistence.*
 @Entity
 data class Answer(
         val answer: String,
+
+        var responseCount: Long = 0,
+
         @Id
         @GeneratedValue
         val id: EntityId = 0

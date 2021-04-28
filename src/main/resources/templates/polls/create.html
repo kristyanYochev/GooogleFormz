@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Poll</title>
+</head>
+<body>
+    <h1>Create a new poll</h1>
+    <form action="#" th:action="@{/polls/create}" th:object="${poll}" th:method="post" method="post">
+        <label for="title">
+            Title
+            <input id="title" type="text" th:field="*{title}">
+        </label>
+        <input type="submit" value="Create">
+    </form>
+</body>
+</html>
